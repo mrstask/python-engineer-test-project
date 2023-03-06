@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    volumes:
+      - .:/opt/code
+    ports:
+    - "5000:5000"

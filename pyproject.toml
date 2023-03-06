@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "app"
+authors = [
+    {name = "Kris Winiarski", email = "kris.winiarski@centralnic.com"},
+]
+description = "User microservice"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Framework :: Flask",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "flask-sqlalchemy>=3.0.3",
+    "flask>=2.2.3"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+  "ipdb>=0.13.11",
+  "pytest==7.2",
+  "pytest-cov>=4.0.0"
+]
+
+[project.scripts]
+app = "app.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
