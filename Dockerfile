@@ -1,12 +1,17 @@
 FROM python:3.10
 
-WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends netcat && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /my_app
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./app .
+COPY ./app ./app
 
 EXPOSE 5000
 

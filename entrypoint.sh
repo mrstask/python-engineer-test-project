@@ -13,4 +13,10 @@ fi
 
 python manage.py create_db
 
-exec "$@"
+# If additional command-line arguments are provided, execute them.
+# Otherwise, run the Flask development server.
+if [ $# -gt 0 ]; then
+    exec "$@"
+else
+    flask run --host=0.0.0.0
+fi
