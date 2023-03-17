@@ -1,7 +1,7 @@
 import random
 from flask.cli import FlaskGroup
 
-from app.main import app, db, User, Company, Team
+from app.main import app, db, User, Company, Team, Admin
 
 cli = FlaskGroup(app)
 
@@ -45,6 +45,13 @@ def seed_db():
         db.session.add(team)
         teams.append(team)
 
+    db.session.commit()
+
+
+@cli.command("create_admin")
+def create_admin():
+    admin = Admin(username='username', password='password')
+    db.session.add(admin)
     db.session.commit()
 
 

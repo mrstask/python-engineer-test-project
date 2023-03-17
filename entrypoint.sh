@@ -13,6 +13,7 @@ fi
 
 python manage.py create_db
 python manage.py seed_db
+python manage.py create_admin
 
 # If additional command-line arguments are provided, execute them.
 # Otherwise, run the Flask development server.
