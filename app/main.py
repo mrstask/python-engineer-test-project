@@ -6,14 +6,32 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
 
-
-
 app = Flask(__name__)
 app.config.from_object("app.config.Config")
+app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
+app.config['RESTPLUS_VALIDATE'] = True
+app.config['RESTPLUS_MASK_SWAGGER'] = False
+app.config['ERROR_404_HELP'] = False
 jwt = JWTManager(app)
 
-restx_api = Api(app, version="1.0", title="Your API Title",
-                description="Your API Description")
+
+api = Api(
+    app,
+    version='1.0',
+    title='Your API Title',
+    description='A description of your API',
+    doc='/swagger/',
+    authorizations={
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Please enter the word "Bearer" followed by a space and your JWT token in the text field below.'
+}
+    },
+    security='Bearer'
+)
+
 teams = Namespace('teams', description='Team management operations')
 users = Namespace('users', description='User management operations')
 admin = Namespace('admins', description='Admin management operations')
@@ -65,6 +83,7 @@ class Admin(db.Model):
         self.username = username
         self.password = password
 
+
 team_user = db.Table(
     "team_user",
     db.Column("team_id", db.Integer, db.ForeignKey("team.id"),
@@ -92,15 +111,19 @@ user_model = users.model('User', {
                                  description='The company unique identifier')
 })
 
-@jwt_required()
+
 @users.route('/')  # Add a new route to the namespace
 class UserList(Resource):
+    @jwt_required()
+    @api.doc(security='Bearer')
     @users.marshal_list_with(user_model)
     def get(self):
         """List all users"""
         users = User.query.all()
         return users
 
+    @jwt_required()
+    @api.doc(security='Bearer')
     @users.expect(user_model)
     @users.marshal_with(user_model, code=201)
     def post(self):
@@ -115,11 +138,13 @@ class UserList(Resource):
         db.session.commit()
         return user, 201
 
-@jwt_required()
+
 @users.route('/<int:id>')
 @users.response(404, 'User not found')
 @users.param('id', 'The user unique identifier')
 class UserResource(Resource):
+    @jwt_required()
+    @api.doc(security='Bearer')
     @teams.marshal_with(user_model)
     def get(self, id):
         """Get a user by ID"""
@@ -128,14 +153,18 @@ class UserResource(Resource):
             return {"message": "User not found"}, 404
         return user
 
-@jwt_required()
+
 @teams.route('/')
 class TeamList(Resource):
+    @jwt_required()
+    @api.doc(security='Bearer')
     @teams.marshal_list_with(team)
     def get(self):
         teams = Team.query.all()
         return teams
 
+    @jwt_required()
+    @api.doc(security='Bearer')
     @teams.expect(team)
     @teams.marshal_with(team, code=201)
     def post(self):
@@ -155,11 +184,13 @@ class TeamList(Resource):
         db.session.commit()
         return team, 201
 
-@jwt_required()
+
 @teams.route('/<int:id>')
 @teams.response(404, 'Team not found')
 @teams.param('id', 'The team unique identifier')
 class TeamResource(Resource):
+    @jwt_required()
+    @api.doc(security='Bearer')
     @teams.marshal_with(team)
     def get(self, id):
         team = Team.query.get(id)
@@ -186,6 +217,6 @@ class AdminLogin(Resource):
 
 
 # Register the namespace
-restx_api.add_namespace(admin)
-restx_api.add_namespace(teams)
-restx_api.add_namespace(users)
+api.add_namespace(admin)
+api.add_namespace(teams)
+api.add_namespace(users)
