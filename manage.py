@@ -1,16 +1,19 @@
 import random
 from flask.cli import FlaskGroup
+from werkzeug.security import generate_password_hash
+from flask_migrate import Migrate
 
 from app.main import app, db, User, Company, Team, Admin
 
 cli = FlaskGroup(app)
+migrate = Migrate(app, db)
 
 
-@cli.command("create_db")
-def create_db():
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+# @cli.command("create_db")
+# def create_db():
+#     db.drop_all()
+#     db.create_all()
+#     db.session.commit()
 
 
 @cli.command("seed_db")
@@ -50,7 +53,7 @@ def seed_db():
 
 @cli.command("create_admin")
 def create_admin():
-    admin = Admin(username='username', password='password')
+    admin = Admin(username='username', password=generate_password_hash('password'))
     db.session.add(admin)
     db.session.commit()
 

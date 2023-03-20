@@ -7,6 +7,8 @@ services:
     - "5000:5000"
     env_file:
       - ./.env.dev
+    volumes:
+      - .:/my_app
 
   db:
     image: postgres:13-alpine

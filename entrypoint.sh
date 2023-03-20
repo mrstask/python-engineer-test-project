@@ -11,9 +11,17 @@ then
     echo "PostgreSQL started"
 fi
 
-python manage.py create_db
-python manage.py seed_db
-python manage.py create_admin
+#python /opt/project/manage.py create_db
+
+# Initialize the migration repository (only needed the first time)
+flask db init
+# Create a migration script
+flask db migrate -m "Initial migration"
+# Apply the migration
+flask db upgrade
+
+python /opt/project/manage.py seed_db
+python /opt/project/manage.py create_admin
 
 # If additional command-line arguments are provided, execute them.
 # Otherwise, run the Flask development server.

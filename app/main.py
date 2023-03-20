@@ -4,6 +4,8 @@ from flask import request
 from flask_restx import Resource, fields, Namespace, Api
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from werkzeug.security import check_password_hash
+from flask_migrate import Migrate
+
 
 
 app = Flask(__name__)
@@ -17,6 +19,7 @@ users = Namespace('users', description='User management operations')
 admin = Namespace('admins', description='Admin management operations')
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 class Company(db.Model):
@@ -56,7 +59,7 @@ class Team(db.Model):
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
     def __init__(self, username, password):
         self.username = username
