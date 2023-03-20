@@ -156,12 +156,21 @@ class UserResource(Resource):
 
 @teams.route('/')
 class TeamList(Resource):
+    def _team_to_dict(self, team):
+        return {
+            'id': team.id,
+            'name': team.name,
+            'company_id': team.company_id,
+            'user_ids': [user.id for user in team.users]
+        }
+
     @jwt_required()
     @api.doc(security='Bearer')
     @teams.marshal_list_with(team)
     def get(self):
         teams = Team.query.all()
-        return teams
+        result = [self._team_to_dict(team) for team in teams]
+        return result
 
     @jwt_required()
     @api.doc(security='Bearer')
@@ -182,13 +191,21 @@ class TeamList(Resource):
             team.users.append(user)
 
         db.session.commit()
-        return team, 201
+        return self._team_to_dict(team), 201
 
 
 @teams.route('/<int:id>')
 @teams.response(404, 'Team not found')
 @teams.param('id', 'The team unique identifier')
 class TeamResource(Resource):
+    def _team_to_dict(self, team):
+        return {
+            'id': team.id,
+            'name': team.name,
+            'company_id': team.company_id,
+            'user_ids': [user.id for user in team.users]
+        }
+
     @jwt_required()
     @api.doc(security='Bearer')
     @teams.marshal_with(team)
@@ -196,7 +213,7 @@ class TeamResource(Resource):
         team = Team.query.get(id)
         if not team:
             return {"message": "Team not found"}, 404
-        return team
+        return self._team_to_dict(team)
 
 
 @admin.route("/login")
