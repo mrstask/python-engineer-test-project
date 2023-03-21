@@ -3,7 +3,24 @@ version: "3.9"
 services:
   app:
     build: .
-    volumes:
-      - .:/opt/code
     ports:
     - "5000:5000"
+    env_file:
+      - ./.env.dev
+    volumes:
+      - .:/my_app
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # for local connection at development
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=hello_flask
+      - POSTGRES_PASSWORD=hello_flask
+      - POSTGRES_DB=hello_flask_dev
+
+volumes:
+  postgres_data:

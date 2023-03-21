@@ -1,74 +1,69 @@
-# Python Engineer test project.
+#Overview
 
-## Getting Started.
+This Flask-based web application provides an API for managing companies, users, teams, and admins.
+The application supports authentication using JWT tokens and has Swagger-based documentation.
 
-You should fork this repo and commit your changes to the forked version.  A running version is not a requirement though we will favour entires that we can run and interact with.
+##Project Structure
 
-## The Task
+    project_root/
+    ├── app/
+    │   ├── __init__.py
+    │   ├── main.py
+    │   ├── config.py
+    │   ├── models.py
+    │   ├── extensions.py
+    │   ├── views.py
+    │
+    ├── .env.dev
+    ├── Dockerfile
+    ├── entrypoint.sh
+    ├── manage.py
+    ├── requirements.txt 
+    └── docker-compose.yml
 
-You’ve been asked to implement a RESTFul API micro service that will let its users create and manage teams for companies used by our platform. The service should:
+##Main Modules
+**main.py**: Contains the main entry point for running the application.  
+**config.py**: Contains configuration settings for the application.  
+**models.py**: Contains the database models for the application.  
+**extensions.py**: Contains Flask extensions like JWTManager, Migrate, and Api.  
+**views.py**: Contains the Flask-RESTx namespaces and routes for the API endpoints.
 
-* support OpenAPI 3.0 specification
-* accept JSON and return JSON responses
+##Installation
+To set up and run the application locally, follow these steps:  
 
+###Install the required dependencies:
 
-### Considerations
-If given time, consider adding the following:
+    pip install -r requirements.txt
 
-* Developer documentation
-* JWT Authentication gateway
-* GitHub Actions release pipeline
+###Set up the environment variables:
 
+    export FLASK_APP=app.main
+    export FLASK_ENV=development
 
-### Service Overview
+###Initialize the database:
 
-Each team has an id, name and at least two members.
-```
-{
-    'id': 1,
-    'name': 'Engineering',
-    'members': [
-        {...}
-    ]
-}
-```
+    flask db init
+    flask db migrate
+    flask db upgrade
 
-Each team member is a `User` object that should have the following attributes:
-```
-{
-    'id': 1,
-    'name': 'John Doe',
-    'email': 'john@doe.com',
-    'company': {...}
-}
-```
+###Run the application:
 
-Every User in the service belongs to one company which is made up of the following attributes:
+    flask run
 
-```
-{
-    'id': 1,
-    'name': 'Acme'
-}
-```
+##API Endpoints
+###Admin
+**POST** /admins/login: Authenticate an admin user.
+###Users
+**GET** /users/: List all users.
+**POST** /users/: Create a new user.
+**GET** /users/<int:id>: Get a user by ID.
+###Teams
+**GET** /teams/: List all teams.
+**POST** /teams/: Create a new team.
+**GET** /teams/<int:id>: Get a team by ID.
 
-The service should make use of Flask and SqlAlchemy.  You can use any relational database of your choice to complete the task.
+##All endpoints, except for the admin login, require a JWT token for authentication.
 
-The service should support the following functionality:
-* Create a new team
-* View a list of all the teams
-* View a list of all the teams for a specific company
-* View a specific team
+For test purposes database is populated on a application creation
 
-
-## Setting up
-
-We've include a simple Dockerfile and basic flask app.py for you to start adding your code to
-
-assuming you have docker set up and runing you can simple do the following to get started.
-
-`docker-compose build app`
-
-`docker-compose run --service-ports app`
-
-Now hit localhost:5000 in your browser and you should see a 404 template.
+default admin login:password is login:password
