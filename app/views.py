@@ -1,9 +1,9 @@
 from flask_restx import Resource, fields
 from flask import request
 
-from models import Team, User, Company, Admin, db
-from serializers import teams, users, admin, user_model, team
-from extensions import api
+from app.models import Team, User, Company, Admin, db
+from app.serializers import teams, users, admin, user_model, team
+from app.extensions import api
 from flask_jwt_extended import create_access_token, jwt_required
 from werkzeug.security import check_password_hash
 

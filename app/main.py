@@ -1,8 +1,8 @@
 from flask import Flask
-from config import Config
-from models import db
-from extensions import jwt, migrate, api
-from views import users, teams, admin
+from app.config import Config
+from app.models import db
+from app.extensions import jwt, migrate, api
+from app.views import users, teams, admin
 
 app = Flask(__name__)
 app.config.from_object(Config)
