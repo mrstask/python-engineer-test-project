@@ -47,7 +47,7 @@ def seed_db():
 
 @cli.command("create_admin")
 def create_admin():
-    admin = Admin(username='username', password=generate_password_hash('password'))
+    admin = Admin(username="username", password=generate_password_hash("password"))
     db.session.add(admin)
     db.session.commit()
 
