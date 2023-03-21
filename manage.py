@@ -3,7 +3,8 @@ from flask.cli import FlaskGroup
 from werkzeug.security import generate_password_hash
 from flask_migrate import Migrate
 
-from app.main import app, db, User, Company, Team, Admin
+from app.main import app, db
+from app.models import Company, Team, Admin, User
 
 cli = FlaskGroup(app)
 migrate = Migrate(app, db)
